@@ -1,9 +1,8 @@
 package guru.springframework.spring5webapp.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -13,15 +12,22 @@ public class Book {
     private Long id;
     private String title;
     private String isbn;
-    private Set<Auther> authers;
 
-    public Book() {
+    @ManyToMany
+    @JoinTable(name = "auther_book", joinColumns =   @JoinColumn(  name ="book_id"), inverseJoinColumns = @JoinColumn(name ="auther_id"))
+    private Set<Auther> authers = new HashSet<Auther>();
+
+    @ManyToOne
+    private  Publisher publisher;
+
+    public Book(String hee, String kjj, Publisher publisher) {
     }
 
-    public Book(String title, String isbn, Set<Auther> authers) {
+    public Book(String title, String isbn, Set<Auther> authers, Publisher publisher) {
         this.title = title;
         this.isbn = isbn;
         this.authers = authers;
+        this.publisher = publisher;
     }
 
     public Long getId() {
@@ -54,5 +60,37 @@ public class Book {
 
     public void setAuthers(Set<Auther> authers) {
         this.authers = authers;
+    }
+
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(id, book.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", isbn='" + isbn + '\'' +
+                ", authers=" + authers +
+                ", publisher=" + publisher +
+                '}';
     }
 }
